@@ -1,0 +1,28 @@
+.table-footer {
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: #9da894;
+  font-size: 9px;
+}
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 10px;
+}
+.pagination .icon-button {
+  height: 26px;
+  width: 26px;
+}
+.pagination > span {
+  background: #edf4e9;
+  color: #7a946a;
+  border-radius: 5px;
+  width: 25px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+}

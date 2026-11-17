@@ -1,0 +1,118 @@
+.table-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 21px 17px;
+  gap: 10px;
+}
+.table-label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #70836f;
+  font-size: 9px;
+}
+.table-scroll {
+  overflow: auto;
+  min-height: 320px;
+  max-height: 460px;
+}
+.table-scroll .data-table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+.data-table th {
+  font-size: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  font-weight: 550;
+  color: #92a08e;
+  background: #f8faf7;
+  padding: 12px 12px;
+  border-top: 1px solid #f0f3ed;
+  border-bottom: 1px solid #edf1e9;
+  white-space: nowrap;
+}
+.data-table td {
+  padding: 17px 12px;
+  border-bottom: 1px solid #f0f3ed;
+  font-size: 10px;
+}
+.data-table th:first-child,
+.data-table td:first-child {
+  padding-left: 21px;
+}
+.data-table th:last-child,
+.data-table td:last-child {
+  padding-right: 21px;
+}
+.table-date {
+  font-size: 9px;
+  color: #93a08b;
+  display: block;
+  max-width: 100px;
+  line-height: 1.7;
+}
+.data-table .table-amount {
+  font-weight: 600;
+  white-space: nowrap;
+  font-size: 10px;
+}
+.table-skeleton {
+  height: 22px;
+  min-width: 45px;
+}
+
+@media (min-width: 1550px) {
+  .data-table td {
+    padding-top: 22px;
+    padding-bottom: 22px;
+  }
+  .data-table .table-amount {
+    font-size: 12px;
+  }
+  .table-date {
+    font-size: 10px;
+  }
+  .table-scroll {
+    min-height: 380px;
+  }
+}
+@media (max-width: 1190px) {
+  .table-toolbar {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .table-label {
+    font-size: 8px;
+  }
+  .data-table th:first-child,
+  .data-table td:first-child {
+    padding-left: 16px;
+  }
+}
+@media (max-width: 1000px) {
+  .table-date {
+    max-width: none;
+  }
+  .table-scroll {
+    min-height: 300px;
+  }
+}
+@media (max-width: 520px) {
+  .table-toolbar {
+    gap: 8px;
+  }
+  .table-scroll .data-table {
+    min-width: 510px;
+  }
+  .table-scroll {
+    min-height: 280px;
+  }
+}

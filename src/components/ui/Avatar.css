@@ -1,0 +1,35 @@
+.avatar {
+  width: 37px;
+  height: 37px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #eaf1e7;
+  color: #5e7858;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.avatar-small {
+  width: 31px;
+  height: 31px;
+  font-size: 10px;
+}
+.table-avatar {
+  height: 31px;
+  width: 31px;
+  font-size: 9px;
+  background: #eff3eb;
+  color: #8b9e7f;
+}
+@media (max-width: 1190px) {
+  .table-avatar {
+    display: none;
+  }
+}
+@media (max-width: 1000px) {
+  .table-avatar {
+    display: inline-flex;
+  }
+}

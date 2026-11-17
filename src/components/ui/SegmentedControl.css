@@ -1,0 +1,35 @@
+.view-switch {
+  display: flex;
+  gap: 3px;
+  padding: 4px;
+  background: #f4f7f1;
+  border: 1px solid #eaf0e4;
+  border-radius: 8px;
+}
+.view-switch button {
+  background: transparent;
+  border: 0;
+  padding: 9px 11px;
+  border-radius: 5px;
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #8b9b80;
+}
+.view-switch button.selected {
+  background: #fff;
+  color: #3f7049;
+  box-shadow: 0 2px 4px #173f3110;
+}
+@media (max-width: 520px) {
+  .view-switch {
+    width: 100%;
+  }
+  .view-switch button {
+    flex: 1;
+    justify-content: center;
+    padding: 9px 6px;
+    font-size: 9px;
+  }
+}

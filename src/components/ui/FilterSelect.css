@@ -1,0 +1,26 @@
+.filter-select {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #92a08f;
+  font-size: 9px;
+}
+.filter-select select {
+  font-size: 9px;
+  color: #70816e;
+  max-width: 150px;
+  padding: 8px 24px 8px 9px;
+  border: 1px solid #e7ece6;
+  border-radius: 6px;
+  background: #fff;
+}
+@media (max-width: 520px) {
+  .filter-select {
+    font-size: 8px;
+    gap: 5px;
+  }
+  .filter-select select {
+    font-size: 9px;
+    width: 117px;
+  }
+}

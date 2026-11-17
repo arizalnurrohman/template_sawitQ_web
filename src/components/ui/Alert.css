@@ -1,0 +1,18 @@
+.alert {
+  padding: 13px 15px;
+  border-radius: 9px;
+  line-height: 1.65;
+  font-size: 12px;
+}
+.alert-error {
+  background: #fff3ed;
+  border: 1px solid #f5d8c7;
+  color: #934925;
+}
+.data-alert {
+  margin-top: 20px;
+}
+.data-alert ul {
+  padding-left: 18px;
+  margin: 6px 0;
+}

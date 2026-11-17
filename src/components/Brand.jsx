@@ -1,3 +1,5 @@
+import "./Brand.css";
+
 export default function Brand({ light = false }) {
   return (
     <div className={`brand ${light ? "brand-light" : ""}`}>

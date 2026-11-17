@@ -1,0 +1,91 @@
+.module-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.module-card {
+  border: 1px solid var(--border);
+  background: #fff;
+  border-radius: 10px;
+  padding: 17px;
+}
+.module-card > span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: #71866d;
+}
+.module-card > span > svg {
+  color: #84a179;
+}
+.module-card strong {
+  display: block;
+  font-family: var(--heading);
+  font-size: 26px;
+  margin: 14px 0 6px;
+}
+.module-card small {
+  color: #92a189;
+  font-size: 9px;
+}
+.activity-toolbar {
+  padding: 0 21px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+}
+.monitoring-note {
+  font-size: 10px;
+  color: #829376;
+  line-height: 1.8;
+  padding: 0 21px 17px;
+  max-width: 850px;
+}
+.activity-record strong {
+  display: block;
+  font-size: 11px;
+  font-weight: 550;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+  max-width: 480px;
+}
+.activity-record small {
+  display: block;
+  margin-top: 5px;
+  color: #94a087;
+  font-size: 10px;
+}
+.activity-context {
+  font-size: 11px;
+  color: #819375;
+  max-width: 240px;
+  display: block;
+  overflow-wrap: anywhere;
+}
+.activity-panel .table-date {
+  max-width: none;
+  min-width: 115px;
+}
+@media (max-width: 1190px) {
+  .module-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .activity-toolbar {
+    flex-wrap: wrap;
+  }
+}
+@media (max-width: 520px) {
+  .module-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .activity-toolbar {
+    padding: 0 16px 12px;
+  }
+  .monitoring-note {
+    padding: 0 16px 15px;
+    font-size: 9px;
+  }
+}

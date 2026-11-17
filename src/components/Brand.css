@@ -1,0 +1,44 @@
+.brand {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.brand img {
+  border-radius: 11px;
+  object-fit: cover;
+}
+.brand-name {
+  display: block;
+  font-family: var(--heading);
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -1.2px;
+  line-height: 1.15;
+  color: #1c3c2e;
+}
+.brand-name > span:first-child {
+  color: #54855a;
+}
+.brand-dot {
+  color: #a8c184;
+}
+.brand-caption {
+  display: block;
+  margin-top: 5px;
+  font-size: 8px;
+  font-weight: 650;
+  letter-spacing: 2.1px;
+  color: #809087;
+}
+.brand-light .brand-name {
+  color: #fff;
+}
+.brand-light .brand-name > span:first-child {
+  color: #b3d8ab;
+}
+.brand-light .brand-caption {
+  color: #a1c0ae;
+}
+.brand-light img {
+  border: 1px solid #ffffff2a;
+}

@@ -1,0 +1,230 @@
+.table-user {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.table-user strong {
+  display: block;
+  font-weight: 550;
+  font-size: 10px;
+  max-width: 135px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.table-user small {
+  display: block;
+  font-size: 8px;
+  color: #a0ab99;
+  margin-top: 5px;
+  max-width: 135px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.summary-panel .panel-heading {
+  padding-bottom: 13px;
+}
+.distribution-total {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  padding: 0 21px;
+  margin: 0 0 17px;
+}
+.distribution-total strong {
+  font-family: var(--heading);
+  font-size: 30px;
+  letter-spacing: -1px;
+}
+.distribution-total > span {
+  font-size: 9px;
+  color: #a0ab96;
+}
+.distribution-bar {
+  display: flex;
+  overflow: hidden;
+  height: 8px;
+  border-radius: 20px;
+  margin: 0 21px 20px;
+  background: #f0f3ec;
+  gap: 2px;
+}
+.distribution-bar .paid,
+.distribution-legend .paid {
+  background: #719c74;
+}
+.distribution-bar .pending,
+.distribution-legend .pending {
+  background: #d7c288;
+}
+.distribution-bar .other,
+.distribution-legend .other {
+  background: #d5ded0;
+}
+.distribution-legend {
+  padding: 0 21px;
+}
+.distribution-legend > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+  font-size: 10px;
+}
+.distribution-legend > div > span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #8d9b85;
+}
+.distribution-legend i {
+  width: 7px;
+  height: 7px;
+  border-radius: 2px;
+}
+.distribution-legend strong {
+  font-size: 10px;
+  font-weight: 600;
+}
+.summary-note {
+  border-top: 1px solid #eef1e9;
+  margin: 17px 21px 0;
+  padding: 13px 0 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: 8px;
+  line-height: 1.7;
+  color: #a8b19d;
+}
+.plan-card {
+  background: #f0f4e9;
+  border: 1px solid #e5ecd9;
+  padding: 21px;
+  border-radius: 11px;
+}
+.plan-card-heading {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #799160;
+}
+.plan-crown {
+  width: 34px;
+  height: 34px;
+  border: 1px solid #dce5ce;
+  background: #e8efd9;
+  border-radius: 9px;
+  display: grid;
+  place-items: center;
+}
+.plan-card-heading > span:nth-child(2) {
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+}
+.plan-card-heading > svg {
+  margin-left: auto;
+  color: #a9b895;
+}
+.plan-card h2 {
+  font-size: 22px;
+  font-weight: 750;
+  color: #516b41;
+  margin-top: 17px;
+}
+.plan-card > p {
+  font-size: 9px;
+  line-height: 1.8;
+  color: #91a47c;
+  margin-top: 6px;
+}
+.plan-price {
+  font-family: var(--heading);
+  font-size: 25px;
+  font-weight: 700;
+  letter-spacing: -1px;
+  color: #597347;
+  margin: 19px 0;
+}
+.plan-price span {
+  font-family: "DM Sans", sans-serif;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: #95a981;
+  margin-left: 6px;
+}
+.plan-detail {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 9px;
+  color: #8a9f74;
+  margin-top: 11px;
+  gap: 5px;
+}
+.plan-detail > span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.plan-detail strong {
+  font-weight: 500;
+  color: #708956;
+}
+.plan-readonly {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 8px;
+  color: #99a88c;
+  border-top: 1px solid #dee7d1;
+  margin-top: 19px;
+  padding-top: 14px;
+}
+
+@media (min-width: 1550px) {
+  .table-user strong {
+    font-size: 12px;
+  }
+  .table-user small {
+    font-size: 10px;
+  }
+  .plan-card > p,
+  .plan-detail {
+    font-size: 11px;
+  }
+}
+@media (max-width: 1190px) {
+  .table-user strong,
+  .table-user small {
+    max-width: 110px;
+  }
+  .plan-price {
+    font-size: 23px;
+  }
+}
+@media (max-width: 520px) {
+  .table-user strong,
+  .table-user small {
+    max-width: 118px;
+  }
+  .distribution-total {
+    margin-top: 5px;
+  }
+  .distribution-total strong {
+    font-size: 33px;
+  }
+  .plan-card {
+    padding: 23px;
+  }
+  .plan-detail,
+  .plan-card > p {
+    font-size: 10px;
+  }
+  .plan-readonly {
+    font-size: 9px;
+  }
+}

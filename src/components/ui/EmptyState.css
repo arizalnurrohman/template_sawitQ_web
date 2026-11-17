@@ -1,0 +1,26 @@
+.empty-state {
+  padding: 48px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 11px;
+  text-align: center;
+}
+.empty-state > svg {
+  color: #9db196;
+  margin-bottom: 7px;
+}
+.empty-state > strong {
+  font-size: 12px;
+  font-weight: 600;
+}
+.empty-state p {
+  font-size: 10px;
+  color: #9aa590;
+  line-height: 1.8;
+  max-width: 320px;
+}
+.empty-state .button {
+  margin-top: 6px;
+}
