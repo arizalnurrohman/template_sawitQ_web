@@ -3,12 +3,16 @@ import useApiResource from "./useApiResource.js";
 
 export default function usePaginatedResource(
   endpoint,
-  { filterName, revision = 0 } = {},
+  { filterName, revision = 0, extraParams = {} } = {},
 ) {
   const [page, setPage] = useState(1);
   const [filter, updateFilter] = useState("");
   const params = new URLSearchParams({ page });
   if (filter && filterName) params.set(filterName, filter);
+  Object.entries(extraParams).forEach(([key, value]) => {
+    if (value !== "" && value !== null && value !== undefined)
+      params.set(key, value);
+  });
   const { data, loading, error, reload } = useApiResource(
     `${endpoint}?${params}`,
     revision,

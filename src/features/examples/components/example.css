@@ -1,0 +1,28 @@
+.panel {
+  margin-bottom: 18px;
+}
+.example-card {
+  display: grid;
+  gap: 12px;
+}
+.example-card-body {
+  font-size: 11px;
+  color: #5f7166;
+  line-height: 1.8;
+}
+.example-code {
+  margin: 0;
+  padding: 14px 16px;
+  background: #153f31;
+  color: #d8e9dc;
+  border-radius: 10px;
+  font-size: 10.5px;
+  line-height: 1.8;
+  overflow-x: auto;
+  white-space: pre;
+}
+.example-note {
+  font-size: 11px;
+  color: #7d8b83;
+  line-height: 1.8;
+}

@@ -4,7 +4,12 @@ import Sidebar from "./Sidebar.jsx";
 import Topbar from "./Topbar.jsx";
 import "./admin.css";
 
-export default function AdminLayout({ navigation, title }) {
+export default function AdminLayout({
+  navigation,
+  title,
+  degraded,
+  menuError,
+}) {
   const [menuOpen, setMenuOpen] = useState(false);
   const { pathname } = useLocation();
 
@@ -35,6 +40,8 @@ export default function AdminLayout({ navigation, title }) {
         items={navigation}
         open={menuOpen}
         onClose={() => setMenuOpen(false)}
+        degraded={degraded}
+        menuError={menuError}
       />
       <div className="main-shell">
         <Topbar
