@@ -255,6 +255,7 @@ test("Route registry supplies page, menu and title from one definition", async (
   const paths = adminRoutes.map((route) => route.path);
   assert.equal(new Set(paths).size, paths.length);
   assert.ok(paths.includes("/dashboard"));
+  assert.ok(paths.includes("/kud"));
   for (const route of adminRoutes) {
     assert.ok(route.path.startsWith("/"));
     assert.ok(route.label && route.title && route.icon);

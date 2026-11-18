@@ -1,4 +1,5 @@
 import {
+  Building2,
   Component,
   FileText,
   History,
@@ -17,6 +18,7 @@ import Permissions from "../pages/Permissions.jsx";
 import ActivityLogs from "../pages/ActivityLogs.jsx";
 import ComponentExample from "../features/examples/ComponentExample.jsx";
 import Blank from "../pages/Blank.jsx";
+import Kud from "../pages/Kud.jsx";
 
 // Registry tunggal: path halaman, label menu, judul tab, ikon, dan komponen.
 // `key` adalah penghubung dengan baris menu di database (kolom `key`).
@@ -30,6 +32,16 @@ export const adminRoutes = [
     component: Dashboard,
     group: "WORKSPACE",
     order: 1,
+  },
+  {
+    key: "kud",
+    path: "/kud",
+    label: "KUD",
+    title: "Profil KUD",
+    icon: Building2,
+    component: Kud,
+    group: "WORKSPACE",
+    order: 2,
   },
   {
     key: "menus",

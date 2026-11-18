@@ -63,6 +63,17 @@ export async function request(
   return data;
 }
 
+// crypto.randomUUID hanya tersedia pada secure context (HTTPS/localhost).
+// Di deployment HTTP biasa (mis. IP LAN), gunakan fallback agar login tetap jalan.
+function createDeviceId() {
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    return `sawitq-web-${crypto.randomUUID()}`;
+  }
+
+  const random = Math.random().toString(36).slice(2, 12);
+  return `sawitq-web-${Date.now().toString(36)}-${random}`;
+}
+
 export async function loginAdmin(login, password) {
   const response = await request("/login", {
     method: "POST",
@@ -70,7 +81,7 @@ export async function loginAdmin(login, password) {
       login: login.trim(),
       password,
       // Token yang dicabut logout masih dapat tersimpan pada sesi device di backend.
-      device_id: `sawitq-web-${crypto.randomUUID()}`,
+      device_id: createDeviceId(),
       device_name: "SawitQ Admin Web",
       platform: "web",
     },

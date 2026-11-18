@@ -1,4 +1,5 @@
 import {
+  Building2,
   Component,
   FileText,
   History,
@@ -12,6 +13,7 @@ import {
 // Daftar ikon yang bisa dipilih saat membuat/menu melalui form.
 export const iconOptions = [
   { value: "LayoutDashboard", label: "Dashboard", icon: LayoutDashboard },
+  { value: "Building2", label: "KUD", icon: Building2 },
   { value: "ListTree", label: "Daftar / Menu", icon: ListTree },
   { value: "Shield", label: "Role", icon: Shield },
   { value: "Users", label: "Pengguna", icon: Users },
