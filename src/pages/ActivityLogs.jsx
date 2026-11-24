@@ -17,7 +17,7 @@ const TYPE_OPTIONS = [
 
 export default function ActivityLogs() {
   const [revision, setRevision] = useState(0);
-  const logs = usePaginatedResource("/admin/activity-logs", {
+  const logs = usePaginatedResource("/admin/access-activity-logs", {
     filterName: "type",
     revision,
   });
