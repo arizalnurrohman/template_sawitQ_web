@@ -215,6 +215,11 @@
   align-items: center;
   gap: 6px;
 }
+.login-admin-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
 .login-form-wrap {
   width: 100%;
   max-width: 365px;

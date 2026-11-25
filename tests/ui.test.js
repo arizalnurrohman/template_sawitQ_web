@@ -221,6 +221,14 @@ test("Page composes reusable heading, children and footer", async () => {
   assert.match(html, /Diperbarui/);
 });
 
+test("ServerStatusBadge renders a safe checking state without a provider", async () => {
+  const html = await render("components/ServerStatusBadge", { compact: true });
+  assert.match(html, /server-status/);
+  assert.match(html, /is-checking/);
+  assert.match(html, /Memeriksa BE/);
+  assert.match(html, /aria-live="polite"/);
+});
+
 test("SessionScreen keeps checking and unavailable states distinct", async () => {
   const checking = await render("features/auth/components/SessionScreen", {
     status: "checking",

@@ -13,6 +13,10 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [react()],
+    define: {
+      __SAWITQ_API_BASE__: JSON.stringify(env.VITE_API_BASE_URL || "/api"),
+      __SAWITQ_API_KEY__: JSON.stringify(env.VITE_API_KEY || ""),
+    },
     server: { host: "127.0.0.1", port: 5173, strictPort: true, proxy },
     preview: { host: "127.0.0.1", port: 4173, strictPort: true, proxy },
   };

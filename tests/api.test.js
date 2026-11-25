@@ -441,6 +441,27 @@ for (const flag of ["success", "status"]) {
   });
 }
 
+test("request explains a 404 as a missing API endpoint", async () => {
+  stubFetch(Response.json({}, { status: 404 }));
+  await assert.rejects(
+    request("/login", { method: "POST", body: {} }),
+    matchesApiError(
+      "Endpoint API tidak ditemukan (HTTP 404) di /api. Pastikan proxy /api atau VITE_API_BASE_URL mengarah ke backend.",
+      404,
+    ),
+  );
+});
+
+test("request preserves a backend 404 message instead of blaming the proxy", async () => {
+  stubFetch(
+    Response.json({ message: "Kebun tidak ditemukan." }, { status: 404 }),
+  );
+  await assert.rejects(
+    request("/kebun/missing"),
+    matchesApiError("Kebun tidak ditemukan.", 404),
+  );
+});
+
 test("request supplies an HTTP fallback when an error response has no message", async () => {
   stubFetch(Response.json({}, { status: 500 }));
   await assert.rejects(

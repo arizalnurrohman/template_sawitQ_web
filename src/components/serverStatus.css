@@ -1,0 +1,84 @@
+.server-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  border: 1px solid #e2e9e2;
+  border-radius: 999px;
+  padding: 4px 9px;
+  background: #f7faf6;
+  color: #5f7263;
+  font: inherit;
+  font-size: 9.5px;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+.server-status:hover {
+  background: #eef4ec;
+}
+.server-status:focus-visible {
+  outline: 2px solid #9cbf8f;
+  outline-offset: 2px;
+}
+.server-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #c9a227;
+  box-shadow: 0 0 0 3px #c9a22722;
+  flex-shrink: 0;
+}
+.server-status.is-online {
+  color: #356b43;
+  border-color: #cfe3d0;
+  background: #f1f8ef;
+}
+.server-status.is-online .server-status-dot {
+  background: #5d9e5c;
+  box-shadow: 0 0 0 3px #5d9e5c22;
+}
+.server-status.is-offline {
+  color: #9a3b30;
+  border-color: #eed3ce;
+  background: #fdf3f1;
+}
+.server-status.is-offline .server-status-dot {
+  background: #c25b4e;
+  box-shadow: 0 0 0 3px #c25b4e22;
+}
+.server-status.is-checking .server-status-dot {
+  animation: server-status-pulse 1.2s ease-in-out infinite;
+}
+.server-status-latency {
+  color: #8ba08c;
+  font-variant-numeric: tabular-nums;
+}
+.server-status.is-compact {
+  padding: 4px 8px;
+  font-size: 9px;
+}
+@keyframes server-status-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+@media (max-width: 780px) {
+  .topbar-status .server-status-latency {
+    display: none;
+  }
+}
+@media (max-width: 520px) {
+  .login-topline .server-status.is-compact {
+    padding: 4px 6px;
+  }
+}

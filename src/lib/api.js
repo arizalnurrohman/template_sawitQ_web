@@ -1,3 +1,5 @@
+import { API_BASE, API_KEY, apiUrl } from "./endpoint.js";
+
 export class ApiError extends Error {
   constructor(message, status = 0, code = null) {
     super(message);
@@ -14,12 +16,13 @@ export async function request(
   const timeout = AbortSignal.timeout(20000);
   let response;
   try {
-    response = await fetch(`/api${path}`, {
+    response = await fetch(apiUrl(path), {
       method,
       credentials: "omit",
       cache: "no-store",
       headers: {
         Accept: "application/json",
+        ...(API_KEY ? { "X-API-KEY": API_KEY } : {}),
         ...(body !== undefined ? { "Content-Type": "application/json" } : {}),
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
@@ -53,9 +56,11 @@ export async function request(
         ? "Sesi Anda berakhir. Silakan masuk kembali."
         : response.status === 403
           ? "Akses ditolak. Akun ini tidak memiliki izin administrator."
-          : validation ||
-            data?.message ||
-            `Layanan tidak tersedia (HTTP ${response.status}).`;
+          : response.status === 404 && !data?.message
+            ? `Endpoint API tidak ditemukan (HTTP 404) di ${API_BASE}. Pastikan proxy /api atau VITE_API_BASE_URL mengarah ke backend.`
+            : validation ||
+              data?.message ||
+              `Layanan tidak tersedia (HTTP ${response.status}).`;
     throw new ApiError(message, response.status, data?.code);
   }
   if (data === null)

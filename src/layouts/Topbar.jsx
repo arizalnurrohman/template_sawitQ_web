@@ -1,6 +1,7 @@
 import { ChevronRight, Menu, ShieldCheck } from "lucide-react";
 import Avatar from "../components/ui/Avatar.jsx";
 import IconButton from "../components/ui/IconButton.jsx";
+import ServerStatusBadge from "../components/ServerStatusBadge.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
 import "./admin.css";
 
@@ -23,6 +24,7 @@ export default function Topbar({ title, menuOpen, onToggleMenu }) {
         <strong>{title}</strong>
       </div>
       <div className="topbar-right">
+        <ServerStatusBadge className="topbar-status" />
         <span className="admin-label">
           <ShieldCheck size={15} /> Developer access
         </span>

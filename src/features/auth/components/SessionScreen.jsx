@@ -1,5 +1,6 @@
 import { LoaderCircle, ServerOff } from "lucide-react";
 import Brand from "../../../components/Brand.jsx";
+import ServerStatusBadge from "../../../components/ServerStatusBadge.jsx";
 import Button from "../../../components/ui/Button.jsx";
 import "../session.css";
 
@@ -7,6 +8,7 @@ export default function SessionScreen({ status, message, onRetry, onLogout }) {
   return (
     <main className="session-screen">
       <Brand />
+      <ServerStatusBadge />
       <section className="session-card" aria-live="polite">
         {status === "checking" ? (
           <>

@@ -5,10 +5,12 @@ import Button from "../../../components/ui/Button.jsx";
 import FormField from "../../../components/ui/FormField.jsx";
 import PasswordField from "../../../components/ui/PasswordField.jsx";
 import { useAuth } from "../../../context/AuthContext.jsx";
+import { useServerStatus } from "../../../context/ServerStatusContext.jsx";
 import "../auth.css";
 
 export default function LoginForm() {
   const { login, message } = useAuth();
+  const { refresh: refreshServer } = useServerStatus();
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -27,6 +29,9 @@ export default function LoginForm() {
       await login(identifier, password);
     } catch (failure) {
       setError(failure.message);
+      if (!failure.status || failure.status === 404 || failure.status >= 500) {
+        refreshServer();
+      }
     } finally {
       setLoading(false);
     }
