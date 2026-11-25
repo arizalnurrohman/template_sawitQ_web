@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
-import { API_BASE } from "../lib/endpoint.js";
+import { API_BASE, BE_URL } from "../lib/endpoint.js";
 import { healthUrl } from "../lib/serverStatus.js";
-import { useServerStatus } from "../context/ServerStatusContext.jsx";
+import { healthUrl } from "../lib/serverStatus.js";
 import "./serverStatus.css";
 
 const LABELS = {
@@ -29,7 +29,7 @@ function detailText(status) {
       `Dicek ${new Date(status.checkedAt).toLocaleTimeString("id-ID")}`,
     );
   }
-  parts.push(`Endpoint ${API_BASE}`);
+  parts.push(`Endpoint ${healthUrl()}`);
   parts.push("Klik untuk memeriksa ulang.");
   return parts.join(" · ");
 }
@@ -86,7 +86,9 @@ export default function ServerStatusBadge({
       </button>
       {showEndpoint && (
         <span className="server-status-endpoint" role="status">
-          {endpoint}
+          BE: {BE_URL || "(same origin)"}
+          <br />
+          Cek: {endpoint}
           {status.message ? ` — ${status.message}` : ""}
         </span>
       )}
