@@ -1,3 +1,11 @@
+.server-status-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  max-width: 100%;
+  flex-wrap: wrap;
+}
 .server-status {
   display: inline-flex;
   align-items: center;
@@ -62,6 +70,39 @@
 .server-status.is-compact {
   padding: 4px 8px;
   font-size: 9px;
+}
+.server-status-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border: 1px solid #e2e9e2;
+  border-radius: 999px;
+  background: #f7faf6;
+  color: #5f7263;
+  cursor: pointer;
+  flex-shrink: 0;
+  padding: 0;
+}
+.server-status-toggle:hover {
+  background: #eef4ec;
+}
+.server-status-endpoint {
+  display: block;
+  flex-basis: 100%;
+  font-size: 9px;
+  line-height: 1.4;
+  color: #5f7263;
+  background: #f7faf6;
+  border: 1px solid #e2e9e2;
+  border-radius: 8px;
+  padding: 4px 8px;
+  word-break: break-all;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+.server-status-wrap.is-compact .server-status-endpoint {
+  font-size: 8.5px;
 }
 @keyframes server-status-pulse {
   0%,

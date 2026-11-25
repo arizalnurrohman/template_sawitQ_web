@@ -1,4 +1,7 @@
+import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 import { API_BASE } from "../lib/endpoint.js";
+import { healthUrl } from "../lib/serverStatus.js";
 import { useServerStatus } from "../context/ServerStatusContext.jsx";
 import "./serverStatus.css";
 
@@ -37,9 +40,11 @@ export default function ServerStatusBadge({
 }) {
   const status = useServerStatus();
   const { state, checking, latencyMs, refresh } = status;
+  const [showEndpoint, setShowEndpoint] = useState(false);
   const label =
     state === "checking" ? LABELS.checking : LABELS[state] || LABELS.offline;
   const detail = detailText(status);
+  const endpoint = healthUrl();
   const classes = [
     "server-status",
     `is-${state}`,
@@ -51,19 +56,40 @@ export default function ServerStatusBadge({
     .join(" ");
 
   return (
-    <button
-      type="button"
-      className={classes}
-      onClick={refresh}
-      title={detail}
-      aria-label={`${label}. ${detail}`}
-      aria-live="polite"
-    >
-      <span className="server-status-dot" aria-hidden="true" />
-      <span className="server-status-text">{label}</span>
-      {!compact && state === "online" && latencyMs != null && (
-        <span className="server-status-latency">{latencyMs} ms</span>
+    <span className={`server-status-wrap${compact ? " is-compact" : ""}`}>
+      <button
+        type="button"
+        className={classes}
+        onClick={refresh}
+        title={detail}
+        aria-label={`${label}. ${detail}`}
+        aria-live="polite"
+      >
+        <span className="server-status-dot" aria-hidden="true" />
+        <span className="server-status-text">{label}</span>
+        {!compact && state === "online" && latencyMs != null && (
+          <span className="server-status-latency">{latencyMs} ms</span>
+        )}
+      </button>
+      <button
+        type="button"
+        className="server-status-toggle"
+        onClick={() => setShowEndpoint((value) => !value)}
+        aria-label={
+          showEndpoint ? "Sembunyikan endpoint" : "Tampilkan endpoint"
+        }
+        title={
+          showEndpoint ? "Sembunyikan endpoint" : "Tampilkan endpoint yang diakses"
+        }
+      >
+        {showEndpoint ? <EyeOff size={12} /> : <Eye size={12} />}
+      </button>
+      {showEndpoint && (
+        <span className="server-status-endpoint" role="status">
+          {endpoint}
+          {status.message ? ` — ${status.message}` : ""}
+        </span>
       )}
-    </button>
+    </span>
   );
 }

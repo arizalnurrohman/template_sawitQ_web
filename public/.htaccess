@@ -1,0 +1,14 @@
+# SPA fallback untuk React Router.
+# Semua path yang bukan file/folder fisik diarahkan ke index.html.
+RewriteEngine On
+RewriteBase /
+
+# (Opsional) Reverse proxy same-origin /api ke backend.
+# Aktifkan bila hosting mendukung mod_proxy dan Anda tidak memakai mode langsung.
+# RewriteRule ^api/(.*)$ https://be.sawitq.my.id/api/$1 [P,L]
+# RequestHeader set X-API-KEY "your-api-key-1"
+
+RewriteRule ^index\.html$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.html [L]
