@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
-import { API_BASE, BE_URL } from "../lib/endpoint.js";
+import { BE_URL } from "../lib/endpoint.js";
 import { healthUrl } from "../lib/serverStatus.js";
-import { healthUrl } from "../lib/serverStatus.js";
+import { useServerStatus } from "../context/ServerStatusContext.jsx";
 import "./serverStatus.css";
 
 const LABELS = {
