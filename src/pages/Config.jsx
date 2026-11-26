@@ -7,11 +7,13 @@ import Button from "../components/ui/Button.jsx";
 import FormField from "../components/ui/FormField.jsx";
 import useApiResource from "../hooks/useApiResource.js";
 import useMutation from "../hooks/useMutation.js";
+import { useAuth } from "../context/AuthContext.jsx";
 import { request } from "../lib/api.js";
 import { useNavigation } from "../context/NavigationContext.jsx";
 
 export default function ConfigPage() {
   const { can } = useNavigation();
+  const { token } = useAuth();
   const resource = useApiResource("/admin/config");
   const { mutate, loading: saving, error: saveError } = useMutation();
   const [form, setForm] = useState({
@@ -54,7 +56,7 @@ export default function ConfigPage() {
 
   async function loadLog() {
     try {
-      const response = await request("/admin/backup/log");
+      const response = await request("/admin/backup/log", { token });
       setBackupLog(response.data || "");
     } catch (failure) {
       setBackupLog(failure.message);
@@ -65,7 +67,7 @@ export default function ConfigPage() {
     setRunning(true);
     setNotice("");
     try {
-      const response = await request("/admin/backup/run", { method: "POST" });
+      const response = await request("/admin/backup/run", { method: "POST", token });
       setNotice(response.message || "Backup dimulai.");
       await loadLog();
     } catch (failure) {
