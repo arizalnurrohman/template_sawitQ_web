@@ -209,7 +209,7 @@ export default function AnggotaPage() {
 
       <DataTable
         ariaLabel="Daftar anggota"
-        columns={["Nama", "Email", "No. HP", "Alamat", "Akun user", "Pro", "Status", "Dibuat", "Aksi"]}
+        columns={["Nama", "Email", "No. HP", "Alamat", "Akun user", "Pro", "Status", "Jumlah lahan", "Dibuat", "Aksi"]}
         data={items}
         loading={resource.loading}
         error={resource.error}
@@ -240,6 +240,7 @@ export default function AnggotaPage() {
                 {item.is_active === false ? "Nonaktif" : "Aktif"}
               </Badge>
             </td>
+            <td className="cell-muted">{item.lahan_count ?? 0}</td>
             <td className="cell-muted">
               {item.created_at ? dateTime(item.created_at) : "-"}
             </td>
