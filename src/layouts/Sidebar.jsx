@@ -99,11 +99,6 @@ export default function Sidebar({ items = [], open, onClose, degraded, menuError
 
       <div className="sidebar-note">
         <Leaf size={22} />
-        <strong>Akses sesuai role.</strong>
-        <p>
-          Menu dan tombol akses dimuat dari database. Ubah hak akses melalui
-          Manajemen Role.
-        </p>
         <span>DEVELOPER CONSOLE · V0.1</span>
       </div>
       <SidebarAccount />
