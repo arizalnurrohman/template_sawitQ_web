@@ -29,6 +29,8 @@ export default function ConfigPage() {
   const [notice, setNotice] = useState("");
   const [backupLog, setBackupLog] = useState("");
   const [running, setRunning] = useState(false);
+  const [driveEmail, setDriveEmail] = useState("");
+  const [driveResult, setDriveResult] = useState("");
 
   useEffect(() => {
     if (resource.data) {
@@ -80,6 +82,31 @@ export default function ConfigPage() {
       const response = await request("/admin/backup/run", { method: "POST", token });
       setNotice(response.message || "Backup dimulai.");
       await loadLog();
+    } catch (failure) {
+      setNotice(failure.message);
+    } finally {
+      setRunning(false);
+    }
+  }
+
+  async function initDrive() {
+    setRunning(true);
+    setNotice("");
+    try {
+      const response = await request("/admin/drive/init", {
+        method: "POST",
+        token,
+        body: { email: driveEmail || undefined },
+      });
+      const id = response.data?.folder_id;
+      if (id) {
+        setForm((current) => ({
+          ...current,
+          GOOGLE_DRIVE_BACKUP_FOLDER_ID: id,
+        }));
+        setDriveResult(`Folder ID: ${id}`);
+        setNotice(response.message || "Folder backup dibuat.");
+      }
     } catch (failure) {
       setNotice(failure.message);
     } finally {
@@ -190,6 +217,36 @@ export default function ConfigPage() {
           </Button>
         )}
       </form>
+
+      <div style={{ marginTop: 24 }}>
+        <h2>Buat folder Drive (milik service account)</h2>
+        <p className="cell-muted">
+          Membuat folder backup di Drive milik service account agar tidak kena
+          batas quota. Folder akan dibagikan ke email Anda.
+        </p>
+        <div className="form-row" style={{ marginTop: 8 }}>
+          <div className="form-block">
+            <FormField
+              label="Email yang diberi akses"
+              id="drive-share-email"
+              type="email"
+              value={driveEmail}
+              onChange={(event) => setDriveEmail(event.target.value)}
+              disabled={!mayEdit}
+            />
+          </div>
+        </div>
+        <div className="row-actions" style={{ marginTop: 8 }}>
+          <Button onClick={initDrive} loading={running} loadingText="Membuat…">
+            Buat folder Drive
+          </Button>
+        </div>
+        {driveResult && (
+          <p className="cell-muted" style={{ marginTop: 8 }}>
+            {driveResult} (sudah diisi ke field Folder ID, simpan konfigurasi)
+          </p>
+        )}
+      </div>
 
       <div style={{ marginTop: 24 }}>
         <h2>Uji backup manual</h2>
