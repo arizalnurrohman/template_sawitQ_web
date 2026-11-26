@@ -224,7 +224,7 @@ export default function Roles() {
           </>
         }
       >
-        <form id="role-form" className="crud-form" onSubmit={submit}>
+        <form id="role-form" className="crud-form panel" onSubmit={submit}>
           <div className="form-row">
             <div className="form-block">
               <label htmlFor="role-name">Nama role</label>

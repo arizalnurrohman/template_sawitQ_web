@@ -207,7 +207,7 @@ export default function Menus() {
           </>
         }
       >
-        <form id="menu-form" className="crud-form" onSubmit={submit}>
+        <form id="menu-form" className="crud-form panel" onSubmit={submit}>
           <div className="form-row">
             <div className="form-block">
               <label htmlFor="menu-label">Label menu</label>

@@ -224,7 +224,7 @@ export default function UsersPage() {
           </>
         }
       >
-        <form id="user-form" className="crud-form" onSubmit={submit}>
+        <form id="user-form" className="crud-form panel" onSubmit={submit}>
           <div className="form-row">
             <div className="form-block">
               <label htmlFor="user-name">Nama</label>

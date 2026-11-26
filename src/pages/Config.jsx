@@ -132,7 +132,7 @@ export default function ConfigPage() {
       {saveError && <Alert>{saveError}</Alert>}
       {notice && <div className="notice"><Alert>{notice}</Alert></div>}
 
-      <form className="crud-form" onSubmit={submit}>
+      <form className="crud-form panel" onSubmit={submit}>
         <div className="form-row">
           <div className="form-block">
             <label className="check-line">
