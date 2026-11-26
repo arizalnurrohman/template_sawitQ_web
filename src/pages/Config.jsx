@@ -63,6 +63,16 @@ export default function ConfigPage() {
     }
   }
 
+  async function clearLog() {
+    try {
+      await request("/admin/backup/log", { method: "DELETE", token });
+      setBackupLog("");
+      setNotice("Log backup dihapus.");
+    } catch (failure) {
+      setNotice(failure.message);
+    }
+  }
+
   async function runBackup() {
     setRunning(true);
     setNotice("");
@@ -192,6 +202,9 @@ export default function ConfigPage() {
           </Button>
           <Button variant="outline" onClick={loadLog}>
             Muat log
+          </Button>
+          <Button variant="text" onClick={clearLog}>
+            Hapus log
           </Button>
         </div>
         {backupLog && (
