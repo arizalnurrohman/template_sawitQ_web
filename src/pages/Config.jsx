@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Save, Server } from "lucide-react";
+import { Save } from "lucide-react";
 import Page from "../layouts/Page.jsx";
 import RefreshButton from "../layouts/RefreshButton.jsx";
 import Alert from "../components/ui/Alert.jsx";
@@ -7,6 +7,7 @@ import Button from "../components/ui/Button.jsx";
 import FormField from "../components/ui/FormField.jsx";
 import useApiResource from "../hooks/useApiResource.js";
 import useMutation from "../hooks/useMutation.js";
+import { request } from "../lib/api.js";
 import { useNavigation } from "../context/NavigationContext.jsx";
 
 export default function ConfigPage() {
@@ -24,6 +25,8 @@ export default function ConfigPage() {
     GOOGLE_DRIVE_SERVICE_ACCOUNT_PATH: "",
   });
   const [notice, setNotice] = useState("");
+  const [backupLog, setBackupLog] = useState("");
+  const [running, setRunning] = useState(false);
 
   useEffect(() => {
     if (resource.data) {
@@ -46,6 +49,29 @@ export default function ConfigPage() {
       resource.reload();
     } catch (failure) {
       setNotice(failure.message);
+    }
+  }
+
+  async function loadLog() {
+    try {
+      const response = await request("/admin/backup/log");
+      setBackupLog(response.data || "");
+    } catch (failure) {
+      setBackupLog(failure.message);
+    }
+  }
+
+  async function runBackup() {
+    setRunning(true);
+    setNotice("");
+    try {
+      const response = await request("/admin/backup/run", { method: "POST" });
+      setNotice(response.message || "Backup dimulai.");
+      await loadLog();
+    } catch (failure) {
+      setNotice(failure.message);
+    } finally {
+      setRunning(false);
     }
   }
 
@@ -152,6 +178,39 @@ export default function ConfigPage() {
           </Button>
         )}
       </form>
+
+      <div style={{ marginTop: 24 }}>
+        <h2>Uji backup manual</h2>
+        <p className="cell-muted">
+          Jalankan backup sekarang untuk menguji konfigurasi (memerlukan exec di server).
+        </p>
+        <div className="row-actions" style={{ marginTop: 8 }}>
+          <Button onClick={runBackup} loading={running} loadingText="Menjalankan…">
+            Jalankan backup sekarang
+          </Button>
+          <Button variant="outline" onClick={loadLog}>
+            Muat log
+          </Button>
+        </div>
+        {backupLog && (
+          <pre
+            style={{
+              marginTop: 12,
+              whiteSpace: "pre-wrap",
+              wordBreak: "break-word",
+              background: "#f7faf6",
+              border: "1px solid #e2e9e2",
+              borderRadius: 8,
+              padding: 12,
+              fontSize: 11,
+              maxHeight: 240,
+              overflow: "auto",
+            }}
+          >
+            {backupLog}
+          </pre>
+        )}
+      </div>
     </Page>
   );
 }
