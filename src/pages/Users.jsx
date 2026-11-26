@@ -136,19 +136,21 @@ export default function UsersPage() {
         </label>
         <label className="crud-search">
           <span>Role</span>
-          <select
-            className="crud-select"
-            value={roleFilter}
-            onChange={(event) => {
-              setRoleFilter(event.target.value);
-              users.setPage(1);
-            }}
-          >
-            <option value="">Semua role</option>
-            {roleItems.map((role) => (
-              <option value={role.id} key={role.id}>{role.name}</option>
-            ))}
-          </select>
+          <span className="input-wrap">
+            <select
+              className="crud-select"
+              value={roleFilter}
+              onChange={(event) => {
+                setRoleFilter(event.target.value);
+                users.setPage(1);
+              }}
+            >
+              <option value="">Semua role</option>
+              {roleItems.map((role) => (
+                <option value={role.id} key={role.id}>{role.name}</option>
+              ))}
+            </select>
+          </span>
         </label>
       </div>
 
