@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Save } from "lucide-react";
 import Page from "../layouts/Page.jsx";
+import Panel from "../components/ui/Panel.jsx";
 import RefreshButton from "../layouts/RefreshButton.jsx";
 import Alert from "../components/ui/Alert.jsx";
 import Button from "../components/ui/Button.jsx";
@@ -264,71 +265,73 @@ export default function ConfigPage() {
         )}
       </form>
 
-      <div style={{ marginTop: 24 }}>
-        <h2>Buat folder Drive (milik service account)</h2>
-        <p className="cell-muted">
-          Membuat folder backup di Drive milik service account agar tidak kena
-          batas quota. Folder akan dibagikan ke email Anda.
-        </p>
-        <div className="form-row" style={{ marginTop: 8 }}>
-          <div className="form-block">
-            <FormField
-              label="Email yang diberi akses"
-              id="drive-share-email"
-              type="email"
-              value={driveEmail}
-              onChange={(event) => setDriveEmail(event.target.value)}
-              disabled={!mayEdit}
-            />
-          </div>
-        </div>
-        <div className="row-actions" style={{ marginTop: 8 }}>
-          <Button onClick={initDrive} loading={running} loadingText="Membuat…">
-            Buat folder Drive
-          </Button>
-        </div>
-        {driveResult && (
-          <p className="cell-muted" style={{ marginTop: 8 }}>
-            {driveResult} (sudah diisi ke field Folder ID, simpan konfigurasi)
+      <Panel title="Uji backup & folder Drive" description="Buat folder Drive milik service account dan uji backup manual.">
+        <div>
+          <h2>Buat folder Drive (milik service account)</h2>
+          <p className="cell-muted">
+            Membuat folder backup di Drive milik service account agar tidak kena
+            batas quota. Folder akan dibagikan ke email Anda.
           </p>
-        )}
-      </div>
-
-      <div style={{ marginTop: 24 }}>
-        <h2>Uji backup manual</h2>
-        <p className="cell-muted">
-          Jalankan backup sekarang untuk menguji konfigurasi (memerlukan exec di server).
-        </p>
-        <div className="row-actions" style={{ marginTop: 8 }}>
-          <Button onClick={runBackup} loading={running} loadingText="Menjalankan…">
-            Jalankan backup sekarang
-          </Button>
-          <Button variant="outline" onClick={loadLog}>
-            Muat log
-          </Button>
-          <Button variant="text" onClick={clearLog}>
-            Hapus log
-          </Button>
+          <div className="form-row" style={{ marginTop: 8 }}>
+            <div className="form-block">
+              <FormField
+                label="Email yang diberi akses"
+                id="drive-share-email"
+                type="email"
+                value={driveEmail}
+                onChange={(event) => setDriveEmail(event.target.value)}
+                disabled={!mayEdit}
+              />
+            </div>
+          </div>
+          <div className="row-actions" style={{ marginTop: 8 }}>
+            <Button onClick={initDrive} loading={running} loadingText="Membuat…">
+              Buat folder Drive
+            </Button>
+          </div>
+          {driveResult && (
+            <p className="cell-muted" style={{ marginTop: 8 }}>
+              {driveResult} (sudah diisi ke field Folder ID, simpan konfigurasi)
+            </p>
+          )}
         </div>
-        {backupLog && (
-          <pre
-            style={{
-              marginTop: 12,
-              whiteSpace: "pre-wrap",
-              wordBreak: "break-word",
-              background: "#f7faf6",
-              border: "1px solid #e2e9e2",
-              borderRadius: 8,
-              padding: 12,
-              fontSize: 11,
-              maxHeight: 240,
-              overflow: "auto",
-            }}
-          >
-            {backupLog}
-          </pre>
-        )}
-      </div>
+
+        <div style={{ marginTop: 24 }}>
+          <h2>Uji backup manual</h2>
+          <p className="cell-muted">
+            Jalankan backup sekarang untuk menguji konfigurasi (memerlukan exec di server).
+          </p>
+          <div className="row-actions" style={{ marginTop: 8 }}>
+            <Button onClick={runBackup} loading={running} loadingText="Menjalankan…">
+              Jalankan backup sekarang
+            </Button>
+            <Button variant="outline" onClick={loadLog}>
+              Muat log
+            </Button>
+            <Button variant="text" onClick={clearLog}>
+              Hapus log
+            </Button>
+          </div>
+          {backupLog && (
+            <pre
+              style={{
+                marginTop: 12,
+                whiteSpace: "pre-wrap",
+                wordBreak: "break-word",
+                background: "#f7faf6",
+                border: "1px solid #e2e9e2",
+                borderRadius: 8,
+                padding: 12,
+                fontSize: 11,
+                maxHeight: 240,
+                overflow: "auto",
+              }}
+            >
+              {backupLog}
+            </pre>
+          )}
+        </div>
+      </Panel>
     </Page>
   );
 }
