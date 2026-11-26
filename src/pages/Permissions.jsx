@@ -15,11 +15,18 @@ export default function Permissions() {
   const roles = useApiResource("/admin/roles");
   const menus = useApiResource("/admin/menus");
   const [roleId, setRoleId] = useState("");
+  const [search, setSearch] = useState("");
   const [matrix, setMatrix] = useState({});
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const roleItems = Array.isArray(roles.data) ? roles.data : roles.data?.data || [];
+  const roleItems = (Array.isArray(roles.data) ? roles.data : roles.data?.data || []).filter((role) => {
+    if (!search.trim()) return true;
+    const q = search.toLowerCase();
+    return [role.name, role.slug, role.description]
+      .filter(Boolean)
+      .some((v) => String(v).toLowerCase().includes(q));
+  });
   const menuItems = Array.isArray(menus.data) ? menus.data : menus.data?.data || [];
   const selectedRole = roleItems.find((role) => String(role.id) === String(roleId));
 
@@ -61,6 +68,18 @@ export default function Permissions() {
       footer="Untuk mengubah akses, gunakan menu Manajemen Role"
     >
       <Panel title="Pilih role" description="Matrix menampilkan aksi yang diizinkan untuk role terpilih.">
+        <div className="crud-filters" style={{ marginBottom: 12 }}>
+          <label className="crud-search">
+            <span>Cari role</span>
+            <span className="input-wrap">
+              <input
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+                placeholder="Nama atau slug role"
+              />
+            </span>
+          </label>
+        </div>
         {roles.loading ? (
           <p className="cell-muted">Memuat role…</p>
         ) : roles.error ? (

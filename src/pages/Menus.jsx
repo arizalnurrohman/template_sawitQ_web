@@ -44,7 +44,14 @@ export default function Menus() {
   const mayAdd = can("menus", "add");
   const mayEdit = can("menus", "edit");
   const mayDelete = can("menus", "delete");
-  const items = Array.isArray(data) ? data : data?.data || [];
+  const [search, setSearch] = useState("");
+  const items = (Array.isArray(data) ? data : data?.data || []).filter((menu) => {
+    if (!search.trim()) return true;
+    const q = search.toLowerCase();
+    return [menu.label, menu.key, menu.path, menu.group]
+      .filter(Boolean)
+      .some((v) => String(v).toLowerCase().includes(q));
+  });
 
   function setField(name, value) {
     setForm((current) => ({ ...current, [name]: value }));
@@ -127,6 +134,19 @@ export default function Menus() {
       </div>
 
       {notice && <div className="notice"><Alert>{notice}</Alert></div>}
+
+      <div className="crud-filters" style={{ marginBottom: 12 }}>
+        <label className="crud-search">
+          <span>Cari menu</span>
+          <span className="input-wrap">
+            <input
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              placeholder="Label, key, path, atau grup"
+            />
+          </span>
+        </label>
+      </div>
 
       <DataTable
         ariaLabel="Daftar menu"

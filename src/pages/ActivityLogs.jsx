@@ -17,9 +17,18 @@ const TYPE_OPTIONS = [
 
 export default function ActivityLogs() {
   const [revision, setRevision] = useState(0);
+  const [search, setSearch] = useState("");
   const logs = usePaginatedResource("/admin/access-activity-logs", {
     filterName: "type",
     revision,
+  });
+
+  const filtered = (logs.result.data || []).filter((log) => {
+    if (!search.trim()) return true;
+    const q = search.toLowerCase();
+    return [log.actor_name, log.actor, log.action, log.description, log.entity_type, log.entity, log.context]
+      .filter(Boolean)
+      .some((v) => String(v).toLowerCase().includes(q));
   });
 
   function refresh() {
@@ -61,10 +70,23 @@ export default function ActivityLogs() {
         </div>
       </div>
 
+      <div className="crud-filters" style={{ marginTop: 8, marginBottom: 12 }}>
+        <label className="crud-search">
+          <span>Cari aktivitas</span>
+          <span className="input-wrap">
+            <input
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              placeholder="Aktor, aksi, entitas, keterangan"
+            />
+          </span>
+        </label>
+      </div>
+
       <DataTable
         ariaLabel="Riwayat aktivitas"
         columns={["Waktu", "Aktor", "Aksi", "Entitas", "Keterangan"]}
-        data={logs.result.data}
+        data={filtered}
         loading={logs.result.loading}
         error={logs.result.error}
         errorTitle="Riwayat tidak dapat dimuat"

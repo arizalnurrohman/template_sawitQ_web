@@ -46,6 +46,7 @@ export default function AnggotaPage() {
   });
   const [notice, setNotice] = useState("");
 
+  const [search, setSearch] = useState("");
   const [lahanAnggotaId, setLahanAnggotaId] = useState(null);
   const [selectedLahanId, setSelectedLahanId] = useState(null);
 
@@ -61,7 +62,13 @@ export default function AnggotaPage() {
   const [detailLoading, setDetailLoading] = useState(false);
   const [detailError, setDetailError] = useState("");
 
-  const items = asArray(resource.data);
+  const items = asArray(resource.data).filter((item) => {
+    if (!search.trim()) return true;
+    const q = search.toLowerCase();
+    return [item.nama, item.email, item.no_hp, item.alamat, item.username, item.user_name]
+      .filter(Boolean)
+      .some((v) => String(v).toLowerCase().includes(q));
+  });
   const lahanItems = asArray(lahanResource.data);
 
   const mayEdit = can("anggota", "edit");
@@ -186,6 +193,19 @@ export default function AnggotaPage() {
     >
       {resource.error && <Alert>{resource.error}</Alert>}
       {notice && <div className="notice"><Alert>{notice}</Alert></div>}
+
+      <div className="crud-filters" style={{ marginBottom: 12 }}>
+        <label className="crud-search">
+          <span>Cari anggota</span>
+          <span className="input-wrap">
+            <input
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              placeholder="Nama, email, no. HP, alamat, username"
+            />
+          </span>
+        </label>
+      </div>
 
       <DataTable
         ariaLabel="Daftar anggota"

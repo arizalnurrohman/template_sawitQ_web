@@ -32,11 +32,18 @@ export default function Roles() {
   const [notice, setNotice] = useState("");
   const [loadingDetail, setLoadingDetail] = useState(false);
   const [deletingId, setDeletingId] = useState(null);
+  const [search, setSearch] = useState("");
 
   const mayAdd = can("roles", "add");
   const mayEdit = can("roles", "edit");
   const mayDelete = can("roles", "delete");
-  const roleItems = Array.isArray(roles.data) ? roles.data : roles.data?.data || [];
+  const roleItems = (Array.isArray(roles.data) ? roles.data : roles.data?.data || []).filter((role) => {
+    if (!search.trim()) return true;
+    const q = search.toLowerCase();
+    return [role.name, role.slug, role.description]
+      .filter(Boolean)
+      .some((v) => String(v).toLowerCase().includes(q));
+  });
   const menuItems = Array.isArray(menus.data)
     ? menus.data
     : menus.data?.data || [];
@@ -149,6 +156,19 @@ export default function Roles() {
       </div>
 
       {notice && <div className="notice"><Alert>{notice}</Alert></div>}
+
+      <div className="crud-filters" style={{ marginBottom: 12 }}>
+        <label className="crud-search">
+          <span>Cari role</span>
+          <span className="input-wrap">
+            <input
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              placeholder="Nama, slug, atau deskripsi"
+            />
+          </span>
+        </label>
+      </div>
 
       <DataTable
         ariaLabel="Daftar role"

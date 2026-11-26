@@ -16,6 +16,9 @@ function asArray(data) {
 export default function Kud() {
   const [selectedKudId, setSelectedKudId] = useState(null);
   const [selectedKelompokId, setSelectedKelompokId] = useState(null);
+  const [searchKud, setSearchKud] = useState("");
+  const [searchKelompok, setSearchKelompok] = useState("");
+  const [searchAnggota, setSearchAnggota] = useState("");
 
   const kudList = useApiResource("/admin/kud");
   const kelompokList = useApiResource(
@@ -25,9 +28,27 @@ export default function Kud() {
     selectedKelompokId ? `/admin/kud/kelompok/${selectedKelompokId}/anggota` : null,
   );
 
-  const kuds = asArray(kudList.data);
-  const kelompoks = asArray(kelompokList.data);
-  const anggotas = asArray(anggotaList.data);
+  const kuds = asArray(kudList.data).filter((k) => {
+    if (!searchKud.trim()) return true;
+    const q = searchKud.toLowerCase();
+    return [k.kud_nama, k.kud_alamat]
+      .filter(Boolean)
+      .some((v) => String(v).toLowerCase().includes(q));
+  });
+  const kelompoks = asArray(kelompokList.data).filter((k) => {
+    if (!searchKelompok.trim()) return true;
+    const q = searchKelompok.toLowerCase();
+    return [k.nama, k.area, k.ketua]
+      .filter(Boolean)
+      .some((v) => String(v).toLowerCase().includes(q));
+  });
+  const anggotas = asArray(anggotaList.data).filter((a) => {
+    if (!searchAnggota.trim()) return true;
+    const q = searchAnggota.toLowerCase();
+    return [a.nama, a.alamat, a.no_hp, a.email, a.nomor_lahan]
+      .filter(Boolean)
+      .some((v) => String(v).toLowerCase().includes(q));
+  });
 
   const selectedKud = kuds.find((item) => item.id === selectedKudId);
   const selectedKelompok = kelompoks.find(
@@ -62,6 +83,18 @@ export default function Kud() {
               <p>Pilih salah satu KUD untuk melihat kelompok tani di dalamnya.</p>
             </div>
             <RefreshButton loading={kudList.loading} onClick={kudList.reload} />
+          </div>
+          <div className="crud-filters" style={{ marginBottom: 12 }}>
+            <label className="crud-search">
+              <span>Cari KUD</span>
+              <span className="input-wrap">
+                <input
+                  value={searchKud}
+                  onChange={(event) => setSearchKud(event.target.value)}
+                  placeholder="Nama atau alamat KUD"
+                />
+              </span>
+            </label>
           </div>
           <DataTable
             ariaLabel="Daftar KUD"
@@ -120,6 +153,18 @@ export default function Kud() {
               onClick={kelompokList.reload}
             />
           </div>
+          <div className="crud-filters" style={{ marginBottom: 12 }}>
+            <label className="crud-search">
+              <span>Cari kelompok</span>
+              <span className="input-wrap">
+                <input
+                  value={searchKelompok}
+                  onChange={(event) => setSearchKelompok(event.target.value)}
+                  placeholder="Nama, area, atau ketua"
+                />
+              </span>
+            </label>
+          </div>
           <DataTable
             ariaLabel="Daftar kelompok tani"
             columns={["Nama kelompok", "Area", "Ketua kelompok", "Dibuat", "Aksi"]}
@@ -170,6 +215,18 @@ export default function Kud() {
               loading={anggotaList.loading}
               onClick={anggotaList.reload}
             />
+          </div>
+          <div className="crud-filters" style={{ marginBottom: 12 }}>
+            <label className="crud-search">
+              <span>Cari anggota</span>
+              <span className="input-wrap">
+                <input
+                  value={searchAnggota}
+                  onChange={(event) => setSearchAnggota(event.target.value)}
+                  placeholder="Nama, alamat, no. HP, email"
+                />
+              </span>
+            </label>
           </div>
           <DataTable
             ariaLabel="Daftar anggota kelompok"
