@@ -266,7 +266,7 @@ export default function ConfigPage() {
       </form>
 
       <Panel title="Uji backup & folder Drive" description="Buat folder Drive milik service account dan uji backup manual.">
-        <div style={{ padding: "8px 4px" }}>
+        <div style={{ padding: "22px 24px" }}>
           <h2>Buat folder Drive (milik service account)</h2>
           <p className="cell-muted">
             Membuat folder backup di Drive milik service account agar tidak kena
