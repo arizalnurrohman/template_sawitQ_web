@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Pencil, Users as UsersIcon } from "lucide-react";
+import { Pencil, Map, Sprout, Users as UsersIcon } from "lucide-react";
 import Page from "../layouts/Page.jsx";
 import RefreshButton from "../layouts/RefreshButton.jsx";
 import Alert from "../components/ui/Alert.jsx";
@@ -11,6 +11,12 @@ import useApiResource from "../hooks/useApiResource.js";
 import useMutation from "../hooks/useMutation.js";
 import { useNavigation } from "../context/NavigationContext.jsx";
 import { dateTime } from "../lib/format.js";
+
+function asArray(data) {
+  if (Array.isArray(data)) return data;
+  if (Array.isArray(data?.data)) return data.data;
+  return [];
+}
 
 export default function AnggotaPage() {
   const { can } = useNavigation();
@@ -28,9 +34,26 @@ export default function AnggotaPage() {
   });
   const [notice, setNotice] = useState("");
 
-  const items = Array.isArray(resource.data)
-    ? resource.data
-    : resource.data?.data || [];
+  const [lahanAnggotaId, setLahanAnggotaId] = useState(null);
+  const [selectedLahanId, setSelectedLahanId] = useState(null);
+
+  const lahanResource = useApiResource(
+    lahanAnggotaId ? `/kebun/${lahanAnggotaId}` : null,
+  );
+  const detailResource = useApiResource(
+    selectedLahanId ? `/kebun-detail/${selectedLahanId}` : null,
+  );
+  const panenResource = useApiResource(
+    selectedLahanId ? `/kebun-detail-panen/${selectedLahanId}` : null,
+  );
+
+  const items = asArray(resource.data);
+  const lahanItems = asArray(lahanResource.data);
+  const panenItems = asArray(panenResource.data?.perawatan ? [] : panenResource.data);
+  // panen endpoint returns { data: { ... } } or array; normalize
+  const panenList = Array.isArray(panenResource.data)
+    ? panenResource.data
+    : panenResource.data?.data || [];
 
   const mayEdit = can("anggota", "edit");
 
@@ -78,11 +101,13 @@ export default function AnggotaPage() {
     }
   }
 
+  const kebunDetail = detailResource.data?.data || detailResource.data;
+
   return (
     <Page
       title="Data anggota"
       eyebrow="KUD"
-      description="Daftar anggota KUD yang terhubung dengan akun pengguna."
+      description="Daftar anggota KUD. Klik Lahan untuk melihat lahan milik anggota dan detail laporannya."
       actions={
         <RefreshButton loading={resource.loading} onClick={resource.reload} />
       }
@@ -129,6 +154,16 @@ export default function AnggotaPage() {
             </td>
             <td>
               <div className="row-actions">
+                <Button
+                  variant="outline"
+                  icon={Map}
+                  onClick={() => {
+                    setLahanAnggotaId(item.id);
+                    setSelectedLahanId(null);
+                  }}
+                >
+                  Lahan
+                </Button>
                 {mayEdit && (
                   <Button variant="outline" icon={Pencil} onClick={() => openEdit(item)}>
                     Ubah
@@ -215,6 +250,91 @@ export default function AnggotaPage() {
           </label>
           {saveError && <Alert>{saveError}</Alert>}
         </form>
+      </Modal>
+
+      <Modal
+        open={Boolean(lahanAnggotaId) && !selectedLahanId}
+        onClose={() => setLahanAnggotaId(null)}
+        title="Daftar lahan milik anggota"
+        description="Klik Detail pada lahan untuk melihat laporan lengkap."
+      >
+        {lahanResource.error && <Alert>{lahanResource.error}</Alert>}
+        <DataTable
+          ariaLabel="Daftar lahan"
+          columns={["Lokasi", "Luas", "Tanam", "Pokok", "Aksi"]}
+          data={lahanItems}
+          loading={lahanResource.loading}
+          error={lahanResource.error}
+          errorTitle="Lahan tidak dapat dimuat"
+          emptyTitle="Belum ada lahan"
+          emptyDescription="Anggota ini belum memiliki lahan."
+          emptyIcon={Sprout}
+          onRetry={lahanResource.reload}
+          renderRow={(lahan) => (
+            <tr key={lahan.id}>
+              <td className="cell-strong">{lahan.lokasi || "-"}</td>
+              <td className="cell-muted">{lahan.luas ?? "-"}</td>
+              <td className="cell-muted">
+                {lahan.bulan_tanam} {lahan.tahun_tanam}
+              </td>
+              <td className="cell-muted">{lahan.jumlah_pokok ?? "-"}</td>
+              <td>
+                <Button
+                  variant="outline"
+                  icon={Sprout}
+                  onClick={() => setSelectedLahanId(lahan.id)}
+                >
+                  Detail
+                </Button>
+              </td>
+            </tr>
+          )}
+        />
+      </Modal>
+
+      <Modal
+        open={Boolean(selectedLahanId)}
+        onClose={() => setSelectedLahanId(null)}
+        title={kebunDetail?.lokasi || "Detail lahan"}
+        description="Informasi kebun dan laporan panen."
+      >
+        {detailResource.loading && <p className="cell-muted">Memuat detail…</p>}
+        {detailResource.error && <Alert>{detailResource.error}</Alert>}
+        {kebunDetail && (
+          <div style={{ display: "grid", gap: 8, marginBottom: 16 }}>
+            <p><strong>Lokasi:</strong> {kebunDetail.lokasi}</p>
+            <p><strong>Luas:</strong> {kebunDetail.luas}</p>
+            <p><strong>Penanaman:</strong> {kebunDetail.penanaman}</p>
+            <p><strong>Janjang bulan ini:</strong> {kebunDetail.janjang}</p>
+            <p><strong>Brondolan bulan ini:</strong> {kebunDetail.brondolan}</p>
+            <p><strong>Total produksi bulan ini:</strong> {kebunDetail.total_produksi}</p>
+          </div>
+        )}
+        <h3>Panen</h3>
+        <DataTable
+          ariaLabel="Daftar panen"
+          columns={["Tanggal", "Tonase janjang", "Tonase brondolan", "Harga"]}
+          data={panenList}
+          loading={panenResource.loading}
+          error={panenResource.error}
+          errorTitle="Panen tidak dapat dimuat"
+          emptyTitle="Belum ada panen"
+          emptyDescription="Belum ada data panen untuk lahan ini."
+          emptyIcon={Sprout}
+          onRetry={panenResource.reload}
+          renderRow={(row) => (
+            <tr key={row.id}>
+              <td className="cell-muted">{row.tanggal_panen || "-"}</td>
+              <td className="cell-muted">{row.tonase_janjang ?? "-"}</td>
+              <td className="cell-muted">{row.tonase_brondolan ?? "-"}</td>
+              <td className="cell-muted">{row.harga ?? "-"}</td>
+            </tr>
+          )}
+        />
+        <p className="cell-muted" style={{ marginTop: 12 }}>
+          Laporan perawatan, pemasukan, dan pengeluaran dapat dilihat di aplikasi mobile
+          untuk detail lengkap.
+        </p>
       </Modal>
     </Page>
   );
