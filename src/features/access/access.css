@@ -64,6 +64,9 @@
   display: grid;
   gap: 14px;
 }
+.crud-form.panel {
+  padding: 22px 24px;
+}
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
