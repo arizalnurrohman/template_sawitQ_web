@@ -19,7 +19,7 @@ export default function DataTable({
   ariaLabel,
 }) {
   return (
-    <div className="table-scroll" aria-busy={loading}>
+    <div className="table-scroll panel" aria-busy={loading}>
       <table className="data-table" aria-label={ariaLabel}>
         <thead>
           <tr>
