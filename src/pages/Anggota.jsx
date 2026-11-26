@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Pencil, Map, Sprout, Users as UsersIcon } from "lucide-react";
 import Page from "../layouts/Page.jsx";
 import RefreshButton from "../layouts/RefreshButton.jsx";
@@ -9,17 +9,29 @@ import DataTable from "../components/ui/DataTable.jsx";
 import Modal from "../components/ui/Modal.jsx";
 import useApiResource from "../hooks/useApiResource.js";
 import useMutation from "../hooks/useMutation.js";
+import { useAuth } from "../context/AuthContext.jsx";
 import { useNavigation } from "../context/NavigationContext.jsx";
+import { request } from "../lib/api.js";
 import { dateTime } from "../lib/format.js";
 
-function asArray(data) {
-  if (Array.isArray(data)) return data;
-  if (Array.isArray(data?.data)) return data.data;
+function asArray(value) {
+  if (Array.isArray(value)) return value;
+  if (Array.isArray(value?.data)) return value.data;
+  if (Array.isArray(value?.panen)) return value.panen;
+  if (Array.isArray(value?.pemasukan)) return value.pemasukan;
+  if (Array.isArray(value?.pengeluaran)) return value.pengeluaran;
+  if (Array.isArray(value?.perawatan)) return value.perawatan;
   return [];
+}
+
+function money(value) {
+  if (value === null || value === undefined || value === "") return "-";
+  return new Intl.NumberFormat("id-ID").format(value);
 }
 
 export default function AnggotaPage() {
   const { can } = useNavigation();
+  const { token } = useAuth();
   const resource = useApiResource("/admin/anggota");
   const { mutate, loading: saving, error: saveError } = useMutation();
   const [open, setOpen] = useState(false);
@@ -40,20 +52,17 @@ export default function AnggotaPage() {
   const lahanResource = useApiResource(
     lahanAnggotaId ? `/kebun/${lahanAnggotaId}` : null,
   );
-  const detailResource = useApiResource(
-    selectedLahanId ? `/kebun-detail/${selectedLahanId}` : null,
-  );
-  const panenResource = useApiResource(
-    selectedLahanId ? `/kebun-detail-panen/${selectedLahanId}` : null,
-  );
+
+  const [detail, setDetail] = useState(null);
+  const [panen, setPanen] = useState([]);
+  const [pemasukan, setPemasukan] = useState([]);
+  const [pengeluaran, setPengeluaran] = useState([]);
+  const [perawatan, setPerawatan] = useState([]);
+  const [detailLoading, setDetailLoading] = useState(false);
+  const [detailError, setDetailError] = useState("");
 
   const items = asArray(resource.data);
   const lahanItems = asArray(lahanResource.data);
-  const panenItems = asArray(panenResource.data?.perawatan ? [] : panenResource.data);
-  // panen endpoint returns { data: { ... } } or array; normalize
-  const panenList = Array.isArray(panenResource.data)
-    ? panenResource.data
-    : panenResource.data?.data || [];
 
   const mayEdit = can("anggota", "edit");
 
@@ -101,7 +110,69 @@ export default function AnggotaPage() {
     }
   }
 
-  const kebunDetail = detailResource.data?.data || detailResource.data;
+  useEffect(() => {
+    if (!selectedLahanId) {
+      setDetail(null);
+      setPanen([]);
+      setPemasukan([]);
+      setPengeluaran([]);
+      setPerawatan([]);
+      setDetailError("");
+      return;
+    }
+
+    let cancelled = false;
+    setDetailLoading(true);
+    setDetailError("");
+
+    async function load() {
+      try {
+        const [detailRes, panenRes, pemasukanRes, pengeluaranRes, jenisRes] =
+          await Promise.all([
+            request(`/kebun-detail/${selectedLahanId}`, { token }),
+            request(`/kebun-detail-panen/${selectedLahanId}`, { token }),
+            request(`/kebun-detail-pemasukan/${selectedLahanId}`, { token }),
+            request(`/kebun-detail-pengeluaran/${selectedLahanId}`, { token }),
+            request(`/perawatan-jenis/${selectedLahanId}`, { token }),
+          ]);
+
+        if (cancelled) return;
+
+        setDetail(detailRes.data?.data || detailRes.data);
+        setPanen(asArray(panenRes.data));
+        setPemasukan(asArray(pemasukanRes.data));
+        setPengeluaran(asArray(pengeluaranRes.data));
+
+        const jenisList = asArray(jenisRes.data);
+        const perawatanRows = await Promise.all(
+          jenisList.map(async (jenis) => {
+            try {
+              const res = await request(
+                `/kebun-detail-perawatan/${jenis.id}/${selectedLahanId}`,
+                { token },
+              );
+              const rows = asArray(res.data);
+              return { jenis: jenis.perawatan_jenis || jenis.nama, rows };
+            } catch {
+              return { jenis: jenis.perawatan_jenis || jenis.nama, rows: [] };
+            }
+          }),
+        );
+        if (!cancelled) setPerawatan(perawatanRows);
+      } catch (failure) {
+        if (!cancelled) setDetailError(failure.message);
+      } finally {
+        if (!cancelled) setDetailLoading(false);
+      }
+    }
+
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedLahanId, token]);
+
+  const kebunDetail = detail;
 
   return (
     <Page
@@ -296,12 +367,13 @@ export default function AnggotaPage() {
         open={Boolean(selectedLahanId)}
         onClose={() => setSelectedLahanId(null)}
         title={kebunDetail?.lokasi || "Detail lahan"}
-        description="Informasi kebun dan laporan panen."
+        description="Informasi kebun dan seluruh laporan."
+        size="lg"
       >
-        {detailResource.loading && <p className="cell-muted">Memuat detail…</p>}
-        {detailResource.error && <Alert>{detailResource.error}</Alert>}
+        {detailLoading && <p className="cell-muted">Memuat detail…</p>}
+        {detailError && <Alert>{detailError}</Alert>}
         {kebunDetail && (
-          <div style={{ display: "grid", gap: 8, marginBottom: 16 }}>
+          <div style={{ display: "grid", gap: 6, marginBottom: 16 }}>
             <p><strong>Lokasi:</strong> {kebunDetail.lokasi}</p>
             <p><strong>Luas:</strong> {kebunDetail.luas}</p>
             <p><strong>Penanaman:</strong> {kebunDetail.penanaman}</p>
@@ -310,18 +382,17 @@ export default function AnggotaPage() {
             <p><strong>Total produksi bulan ini:</strong> {kebunDetail.total_produksi}</p>
           </div>
         )}
+
         <h3>Panen</h3>
         <DataTable
           ariaLabel="Daftar panen"
           columns={["Tanggal", "Tonase janjang", "Tonase brondolan", "Harga"]}
-          data={panenList}
-          loading={panenResource.loading}
-          error={panenResource.error}
-          errorTitle="Panen tidak dapat dimuat"
+          data={panen}
+          loading={detailLoading}
+          error={null}
           emptyTitle="Belum ada panen"
           emptyDescription="Belum ada data panen untuk lahan ini."
           emptyIcon={Sprout}
-          onRetry={panenResource.reload}
           renderRow={(row) => (
             <tr key={row.id}>
               <td className="cell-muted">{row.tanggal_panen || "-"}</td>
@@ -331,10 +402,71 @@ export default function AnggotaPage() {
             </tr>
           )}
         />
-        <p className="cell-muted" style={{ marginTop: 12 }}>
-          Laporan perawatan, pemasukan, dan pengeluaran dapat dilihat di aplikasi mobile
-          untuk detail lengkap.
-        </p>
+
+        <h3 style={{ marginTop: 16 }}>Pemasukan</h3>
+        <DataTable
+          ariaLabel="Daftar pemasukan"
+          columns={["Tanggal", "Jumlah", "Keterangan"]}
+          data={pemasukan}
+          loading={detailLoading}
+          error={null}
+          emptyTitle="Belum ada pemasukan"
+          emptyDescription="Belum ada data pemasukan untuk lahan ini."
+          emptyIcon={Sprout}
+          renderRow={(row) => (
+            <tr key={row.id}>
+              <td className="cell-muted">{row.tanggal_pemasukan || row.tanggal || "-"}</td>
+              <td className="cell-muted">{money(row.jumlah ?? row.nominal)}</td>
+              <td className="cell-muted">{row.keterangan || row.deskripsi || "-"}</td>
+            </tr>
+          )}
+        />
+
+        <h3 style={{ marginTop: 16 }}>Pengeluaran</h3>
+        <DataTable
+          ariaLabel="Daftar pengeluaran"
+          columns={["Tanggal", "Jumlah", "Keterangan"]}
+          data={pengeluaran}
+          loading={detailLoading}
+          error={null}
+          emptyTitle="Belum ada pengeluaran"
+          emptyDescription="Belum ada data pengeluaran untuk lahan ini."
+          emptyIcon={Sprout}
+          renderRow={(row) => (
+            <tr key={row.id}>
+              <td className="cell-muted">{row.tanggal_pengeluaran || row.tanggal || "-"}</td>
+              <td className="cell-muted">{money(row.jumlah ?? row.nominal)}</td>
+              <td className="cell-muted">{row.keterangan || row.deskripsi || "-"}</td>
+            </tr>
+          )}
+        />
+
+        <h3 style={{ marginTop: 16 }}>Perawatan</h3>
+        {perawatan.length === 0 && !detailLoading && (
+          <p className="cell-muted">Belum ada data perawatan.</p>
+        )}
+        {perawatan.map((group) => (
+          <div key={group.jenis} style={{ marginBottom: 12 }}>
+            <h4 style={{ margin: "8px 0 4px" }}>{group.jenis}</h4>
+            <DataTable
+              ariaLabel={`Perawatan ${group.jenis}`}
+              columns={["Tanggal mulai", "Satuan", "Keterangan"]}
+              data={group.rows}
+              loading={false}
+              error={null}
+              emptyTitle="Belum ada riwayat"
+              emptyDescription="Belum ada riwayat perawatan."
+              emptyIcon={Sprout}
+              renderRow={(row) => (
+                <tr key={row.id}>
+                  <td className="cell-muted">{row.tanggal_mulai || "-"}</td>
+                  <td className="cell-muted">{row.perawatan_satuan || row.satuan || "-"}</td>
+                  <td className="cell-muted">{row.keterangan || "-"}</td>
+                </tr>
+              )}
+            />
+          </div>
+        ))}
       </Modal>
     </Page>
   );
