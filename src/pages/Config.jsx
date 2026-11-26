@@ -23,8 +23,12 @@ export default function ConfigPage() {
     BACKUP_ARCHIVE_PASSWORD: "",
     BACKUP_PHOTOS_DISK: "public",
     BACKUP_DB_CONNECTION: "mysql",
+    GOOGLE_DRIVE_AUTH_MODE: "service_account",
     GOOGLE_DRIVE_BACKUP_FOLDER_ID: "",
     GOOGLE_DRIVE_SERVICE_ACCOUNT_PATH: "",
+    GOOGLE_DRIVE_OAUTH_CLIENT_ID: "",
+    GOOGLE_DRIVE_OAUTH_CLIENT_SECRET: "",
+    GOOGLE_DRIVE_OAUTH_REFRESH_TOKEN: "",
   });
   const [notice, setNotice] = useState("");
   const [backupLog, setBackupLog] = useState("");
@@ -194,6 +198,19 @@ export default function ConfigPage() {
           </div>
         </div>
         <div className="form-block">
+          <label htmlFor="backup-auth-mode">Mode autentikasi Drive</label>
+          <select
+            id="backup-auth-mode"
+            className="crud-select"
+            value={form.GOOGLE_DRIVE_AUTH_MODE}
+            onChange={(event) => setField("GOOGLE_DRIVE_AUTH_MODE", event.target.value)}
+            disabled={!mayEdit}
+          >
+            <option value="service_account">Service Account</option>
+            <option value="oauth">OAuth User (disarankan jika quota habis)</option>
+          </select>
+        </div>
+        <div className="form-block">
           <FormField
             label="Google Drive Folder ID"
             id="backup-folder"
@@ -204,10 +221,39 @@ export default function ConfigPage() {
         </div>
         <div className="form-block">
           <FormField
-            label="Path service account JSON"
+            label="Path service account JSON (mode service_account)"
             id="backup-sa"
             value={form.GOOGLE_DRIVE_SERVICE_ACCOUNT_PATH}
             onChange={(event) => setField("GOOGLE_DRIVE_SERVICE_ACCOUNT_PATH", event.target.value)}
+            disabled={!mayEdit}
+          />
+        </div>
+        <div className="form-block">
+          <FormField
+            label="OAuth Client ID (mode oauth)"
+            id="oauth-client-id"
+            value={form.GOOGLE_DRIVE_OAUTH_CLIENT_ID}
+            onChange={(event) => setField("GOOGLE_DRIVE_OAUTH_CLIENT_ID", event.target.value)}
+            disabled={!mayEdit}
+          />
+        </div>
+        <div className="form-block">
+          <FormField
+            label="OAuth Client Secret (mode oauth)"
+            id="oauth-client-secret"
+            type="password"
+            value={form.GOOGLE_DRIVE_OAUTH_CLIENT_SECRET}
+            onChange={(event) => setField("GOOGLE_DRIVE_OAUTH_CLIENT_SECRET", event.target.value)}
+            disabled={!mayEdit}
+          />
+        </div>
+        <div className="form-block">
+          <FormField
+            label="OAuth Refresh Token (mode oauth)"
+            id="oauth-refresh-token"
+            type="password"
+            value={form.GOOGLE_DRIVE_OAUTH_REFRESH_TOKEN}
+            onChange={(event) => setField("GOOGLE_DRIVE_OAUTH_REFRESH_TOKEN", event.target.value)}
             disabled={!mayEdit}
           />
         </div>
