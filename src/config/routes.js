@@ -6,6 +6,7 @@ import {
   KeyRound,
   LayoutDashboard,
   ListTree,
+  Settings,
   Shield,
   Users,
 } from "lucide-react";
@@ -15,6 +16,7 @@ import Menus from "../pages/Menus.jsx";
 import Roles from "../pages/Roles.jsx";
 import UsersPage from "../pages/Users.jsx";
 import AnggotaPage from "../pages/Anggota.jsx";
+import ConfigPage from "../pages/Config.jsx";
 import Permissions from "../pages/Permissions.jsx";
 import ActivityLogs from "../pages/ActivityLogs.jsx";
 import ComponentExample from "../features/examples/ComponentExample.jsx";
@@ -103,6 +105,16 @@ export const adminRoutes = [
     component: ActivityLogs,
     group: "PENDUKUNG",
     order: 21,
+  },
+  {
+    key: "config",
+    path: "/config",
+    label: "Konfigurasi Backup",
+    title: "Konfigurasi Backup",
+    icon: Settings,
+    component: ConfigPage,
+    group: "PENDUKUNG",
+    order: 22,
   },
   {
     key: "example",
