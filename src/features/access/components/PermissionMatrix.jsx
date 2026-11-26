@@ -9,7 +9,7 @@ export default function PermissionMatrix({
   readOnly = false,
 }) {
   return (
-    <div className="matrix-wrap">
+    <div className="matrix-wrap panel">
       <table className="matrix-table">
         <thead>
           <tr>

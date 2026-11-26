@@ -68,7 +68,7 @@ export default function Permissions() {
       footer="Untuk mengubah akses, gunakan menu Manajemen Role"
     >
       <Panel title="Pilih role" description="Matrix menampilkan aksi yang diizinkan untuk role terpilih.">
-        <div className="crud-filters" style={{ marginBottom: 12 }}>
+        <div className="crud-filters" style={{ marginBottom: 12,padding:25 }}>
           <label className="crud-search">
             <span>Cari role</span>
             <span className="input-wrap">
@@ -81,11 +81,11 @@ export default function Permissions() {
           </label>
         </div>
         {roles.loading ? (
-          <p className="cell-muted">Memuat role…</p>
+          <p className="cell-muted" style={{ marginBottom: 12,padding:25 }}>Memuat role…</p>
         ) : roles.error ? (
           <Alert>{roles.error}</Alert>
         ) : (
-          <div className="role-summary">
+          <div className="role-summary" style={{ marginBottom: 12,padding:25 }} >
             {roleItems.map((role) => (
               <button
                 type="button"
