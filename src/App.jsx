@@ -38,6 +38,7 @@ export default function App() {
           path: menu.path || definition.path,
           label: menu.label || definition.label,
           title: definition.title,
+          group: menu.group || definition.group,
         };
       })
       .filter(Boolean);
