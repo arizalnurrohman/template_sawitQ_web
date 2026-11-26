@@ -14,6 +14,7 @@ import Dashboard from "../pages/Dashboard.jsx";
 import Menus from "../pages/Menus.jsx";
 import Roles from "../pages/Roles.jsx";
 import UsersPage from "../pages/Users.jsx";
+import AnggotaPage from "../pages/Anggota.jsx";
 import Permissions from "../pages/Permissions.jsx";
 import ActivityLogs from "../pages/ActivityLogs.jsx";
 import ComponentExample from "../features/examples/ComponentExample.jsx";
@@ -72,6 +73,16 @@ export const adminRoutes = [
     component: UsersPage,
     group: "ADMINISTRASI",
     order: 12,
+  },
+  {
+    key: "anggota",
+    path: "/anggota",
+    label: "Anggota",
+    title: "Data Anggota",
+    icon: Users,
+    component: AnggotaPage,
+    group: "ADMINISTRASI",
+    order: 13,
   },
   {
     key: "permissions",
