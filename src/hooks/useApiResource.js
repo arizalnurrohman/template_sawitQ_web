@@ -13,6 +13,10 @@ export default function useApiResource(path, revision = 0) {
   const reload = useCallback(() => setAttempt((value) => value + 1), []);
 
   useEffect(() => {
+    if (!path) {
+      setResult({ loading: false, data: null, error: "" });
+      return;
+    }
     const controller = new AbortController();
     setResult({ loading: true, data: null, error: "" });
     request(path, { token, signal: controller.signal })

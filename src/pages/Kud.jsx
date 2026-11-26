@@ -1,180 +1,200 @@
 import { useState } from "react";
-import {
-  Building2,
-  CalendarDays,
-  Mail,
-  MapPin,
-  Phone,
-  Sprout,
-  Users,
-} from "lucide-react";
+import { ArrowLeft, Building2, Users } from "lucide-react";
 import Page from "../layouts/Page.jsx";
-import Panel from "../components/ui/Panel.jsx";
+import RefreshButton from "../layouts/RefreshButton.jsx";
+import Alert from "../components/ui/Alert.jsx";
 import Badge from "../components/ui/Badge.jsx";
+import DataTable from "../components/ui/DataTable.jsx";
+import useApiResource from "../hooks/useApiResource.js";
 
-// Data contoh profil KUD. Ganti dengan hasil API bila endpoint master KUD
-// sudah tersedia; bentuk datanya sengaja dibuat datar agar mudah dipetakan.
-const KUD_LIST = [
-  {
-    id: "kud-001",
-    kode: "KUD-001",
-    nama: "KUD Sawit Sejahtera",
-    alamat:
-      "Jl. Lintas Sumatera No. 128, Kec. Tanjung Beringin, Kab. Serdang Bedagai, Sumatera Utara",
-    status: "Aktif",
-    ketua: "H. Ahmad Siregar",
-    tahunBerdiri: 1998,
-    telepon: "(061) 8123 456",
-    email: "admin@kudsawitsejahtera.id",
-    anggota: 248,
-    kelompok: 12,
-    komoditas: "TBS, pupuk, dan bibit sawit",
-    unitUsaha: [
-      "Pengolahan TBS",
-      "Koperasi simpan pinjam",
-      "Penyediaan sarana produksi",
-      "Pemasaran hasil panen",
-    ],
-  },
-  {
-    id: "kud-002",
-    kode: "KUD-002",
-    nama: "KUD Tani Makmur",
-    alamat:
-      "Jl. Desa Sumber Rejo No. 45, Kec. Pangkalan Susu, Kab. Langkat, Sumatera Utara",
-    status: "Aktif",
-    ketua: "Siti Rahmawati",
-    tahunBerdiri: 2004,
-    telepon: "(061) 8877 210",
-    email: "kontak@kudtanimakmur.id",
-    anggota: 176,
-    kelompok: 9,
-    komoditas: "TBS dan kopra",
-    unitUsaha: [
-      "Pengumpulan TBS",
-      "Penyediaan pupuk",
-      "Simpan pinjam anggota",
-    ],
-  },
-];
-
-function DetailItem({ icon: Icon, label, children }) {
-  return (
-    <div style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
-      <span
-        aria-hidden="true"
-        style={{
-          display: "inline-flex",
-          alignItems: "center",
-          justifyContent: "center",
-          width: 30,
-          height: 30,
-          borderRadius: 8,
-          background: "var(--surface-muted, #f1f5f9)",
-          flex: "none",
-        }}
-      >
-        <Icon size={15} />
-      </span>
-      <div>
-        <p className="cell-muted" style={{ margin: 0, fontSize: 12 }}>
-          {label}
-        </p>
-        <p style={{ margin: "2px 0 0", fontWeight: 600 }}>{children}</p>
-      </div>
-    </div>
-  );
+function asArray(data) {
+  if (Array.isArray(data)) return data;
+  if (Array.isArray(data?.data)) return data.data;
+  return [];
 }
 
 export default function Kud() {
-  const [selectedId, setSelectedId] = useState(KUD_LIST[0].id);
-  const selected = KUD_LIST.find((item) => item.id === selectedId) ?? KUD_LIST[0];
+  const [selectedKudId, setSelectedKudId] = useState(null);
+  const [selectedKelompokId, setSelectedKelompokId] = useState(null);
+
+  const kudList = useApiResource("/admin/kud");
+  const kelompokList = useApiResource(
+    selectedKudId ? `/admin/kud/${selectedKudId}/kelompok` : null,
+  );
+  const anggotaList = useApiResource(
+    selectedKelompokId ? `/admin/kud/kelompok/${selectedKelompokId}/anggota` : null,
+  );
+
+  const kuds = asArray(kudList.data);
+  const kelompoks = asArray(kelompokList.data);
+  const anggotas = asArray(anggotaList.data);
+
+  const selectedKud = kuds.find((item) => item.id === selectedKudId);
+  const selectedKelompok = kelompoks.find(
+    (item) => item.id === selectedKelompokId,
+  );
+
+  function resetToKud() {
+    setSelectedKelompokId(null);
+    setSelectedKudId(null);
+  }
+
+  function resetToKelompok() {
+    setSelectedKelompokId(null);
+  }
 
   return (
     <Page
       title="Profil KUD"
       eyebrow="KUD"
-      description="Lihat nama KUD dan informasi detail masing-masing koperasi unit desa."
-      footer="Pilih KUD untuk melihat detailnya"
+      description="Data KUD, kelompok tani, dan anggota kelompok dari backend."
+      footer="Pilih KUD untuk melihat kelompok tani, lalu pilih kelompok untuk melihat anggotanya"
     >
-      <Panel
-        title="Daftar KUD"
-        description="Klik salah satu KUD untuk menampilkan informasi detail."
-      >
-        <div className="role-summary">
-          {KUD_LIST.map((kud) => (
-            <button
-              type="button"
-              key={kud.id}
-              className="button button-outline"
-              aria-pressed={kud.id === selectedId}
-              onClick={() => setSelectedId(kud.id)}
-            >
-              <Building2 size={14} /> {kud.nama}
-            </button>
-          ))}
-        </div>
-      </Panel>
+      {kudList.error && <Alert>{kudList.error}</Alert>}
+      {kelompokList.error && <Alert>{kelompokList.error}</Alert>}
+      {anggotaList.error && <Alert>{anggotaList.error}</Alert>}
 
-      <div style={{ marginTop: 22 }}>
-        <Panel
-          title={selected.nama}
-          description={selected.alamat}
-        >
-          <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 18 }}>
-            <Badge tone={selected.status === "Aktif" ? "success" : "danger"}>
-              {selected.status}
-            </Badge>
-            <Badge>{selected.kode}</Badge>
+      {!selectedKudId && (
+        <>
+          <div className="crud-toolbar">
+            <div>
+              <h2>Daftar KUD</h2>
+              <p>Pilih salah satu KUD untuk melihat kelompok tani di dalamnya.</p>
+            </div>
+            <RefreshButton loading={kudList.loading} onClick={kudList.reload} />
           </div>
+          <DataTable
+            ariaLabel="Daftar KUD"
+            columns={["Nama KUD", "Alamat", "Status", "Dibuat", "Aksi"]}
+            data={kuds}
+            loading={kudList.loading}
+            error={kudList.error}
+            errorTitle="KUD tidak dapat dimuat"
+            emptyTitle="Belum ada KUD"
+            emptyDescription="Data KUD akan muncul setelah ada entri di kudm_kud."
+            emptyIcon={Building2}
+            onRetry={kudList.reload}
+            renderRow={(kud) => (
+              <tr key={kud.id}>
+                <td className="cell-strong">{kud.kud_nama || "-"}</td>
+                <td className="cell-muted">{kud.kud_alamat || "-"}</td>
+                <td>
+                  <Badge tone={kud.kud_status ? "success" : "danger"}>
+                    {kud.kud_status ? "Aktif" : "Nonaktif"}
+                  </Badge>
+                </td>
+                <td className="cell-muted">
+                  {kud.created_at ? kud.created_at : "-"}
+                </td>
+                <td>
+                  <button
+                    type="button"
+                    className="button button-outline"
+                    onClick={() => setSelectedKudId(kud.id)}
+                  >
+                    Detail
+                  </button>
+                </td>
+              </tr>
+            )}
+          />
+        </>
+      )}
 
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-              gap: "16px 24px",
-            }}
-          >
-            <DetailItem icon={MapPin} label="Alamat">
-              {selected.alamat}
-            </DetailItem>
-            <DetailItem icon={Users} label="Ketua">
-              {selected.ketua}
-            </DetailItem>
-            <DetailItem icon={CalendarDays} label="Tahun berdiri">
-              {selected.tahunBerdiri}
-            </DetailItem>
-            <DetailItem icon={Phone} label="Telepon">
-              {selected.telepon}
-            </DetailItem>
-            <DetailItem icon={Mail} label="Email">
-              {selected.email}
-            </DetailItem>
-            <DetailItem icon={Sprout} label="Komoditas">
-              {selected.komoditas}
-            </DetailItem>
-            <DetailItem icon={Users} label="Jumlah anggota">
-              {selected.anggota} orang
-            </DetailItem>
-            <DetailItem icon={Building2} label="Jumlah kelompok">
-              {selected.kelompok} kelompok
-            </DetailItem>
+      {selectedKudId && !selectedKelompokId && (
+        <>
+          <div className="crud-toolbar">
+            <div>
+              <button
+                type="button"
+                className="button button-text"
+                onClick={resetToKud}
+              >
+                <ArrowLeft size={14} /> Kembali ke daftar KUD
+              </button>
+              <h2>Kelompok tani — {selectedKud?.kud_nama || selectedKudId}</h2>
+              <p>Klik anggota untuk melihat daftar anggota kelompok.</p>
+            </div>
+            <RefreshButton
+              loading={kelompokList.loading}
+              onClick={kelompokList.reload}
+            />
           </div>
-        </Panel>
-      </div>
+          <DataTable
+            ariaLabel="Daftar kelompok tani"
+            columns={["Nama kelompok", "Area", "Ketua kelompok", "Dibuat", "Aksi"]}
+            data={kelompoks}
+            loading={kelompokList.loading}
+            error={kelompokList.error}
+            errorTitle="Kelompok tidak dapat dimuat"
+            emptyTitle="Belum ada kelompok tani"
+            emptyDescription="Tidak ada kelompok tani untuk KUD ini."
+            emptyIcon={Users}
+            onRetry={kelompokList.reload}
+            renderRow={(kelompok) => (
+              <tr key={kelompok.id}>
+                <td className="cell-strong">{kelompok.nama || "-"}</td>
+                <td className="cell-muted">{kelompok.area || "-"}</td>
+                <td>{kelompok.ketua || "-"}</td>
+                <td className="cell-muted">{kelompok.created_at || "-"}</td>
+                <td>
+                  <button
+                    type="button"
+                    className="button button-outline"
+                    onClick={() => setSelectedKelompokId(kelompok.id)}
+                  >
+                    Anggota
+                  </button>
+                </td>
+              </tr>
+            )}
+          />
+        </>
+      )}
 
-      <div style={{ marginTop: 22 }}>
-        <Panel
-          title="Unit usaha"
-          description="Layanan dan unit usaha yang dikelola KUD terpilih."
-        >
-          <ul style={{ margin: 0, paddingLeft: 20, lineHeight: 1.9 }}>
-            {selected.unitUsaha.map((unit) => (
-              <li key={unit}>{unit}</li>
-            ))}
-          </ul>
-        </Panel>
-      </div>
+      {selectedKelompokId && (
+        <>
+          <div className="crud-toolbar">
+            <div>
+              <button
+                type="button"
+                className="button button-text"
+                onClick={resetToKelompok}
+              >
+                <ArrowLeft size={14} /> Kembali ke kelompok
+              </button>
+              <h2>Anggota kelompok — {selectedKelompok?.nama || selectedKelompokId}</h2>
+              <p>Daftar anggota yang tergabung dalam kelompok ini.</p>
+            </div>
+            <RefreshButton
+              loading={anggotaList.loading}
+              onClick={anggotaList.reload}
+            />
+          </div>
+          <DataTable
+            ariaLabel="Daftar anggota kelompok"
+            columns={["Nama", "No. lahan", "Alamat", "No. HP", "Email", "Urutan"]}
+            data={anggotas}
+            loading={anggotaList.loading}
+            error={anggotaList.error}
+            errorTitle="Anggota tidak dapat dimuat"
+            emptyTitle="Belum ada anggota"
+            emptyDescription="Tidak ada anggota untuk kelompok ini."
+            emptyIcon={Users}
+            onRetry={anggotaList.reload}
+            renderRow={(anggota) => (
+              <tr key={anggota.id}>
+                <td className="cell-strong">{anggota.nama || "-"}</td>
+                <td className="cell-muted">{anggota.nomor_lahan || "-"}</td>
+                <td className="cell-muted">{anggota.alamat || "-"}</td>
+                <td className="cell-muted">{anggota.no_hp || "-"}</td>
+                <td className="cell-muted">{anggota.email || "-"}</td>
+                <td className="cell-muted">{anggota.sort ?? "-"}</td>
+              </tr>
+            )}
+          />
+        </>
+      )}
     </Page>
   );
 }
