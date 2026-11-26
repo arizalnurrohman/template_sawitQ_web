@@ -97,10 +97,6 @@ export default function Sidebar({ items = [], open, onClose, degraded, menuError
         )}
       </nav>
 
-      <div className="sidebar-note">
-        <Leaf size={22} />
-        <span>DEVELOPER CONSOLE · V0.1</span>
-      </div>
       <SidebarAccount />
     </aside>
   );
